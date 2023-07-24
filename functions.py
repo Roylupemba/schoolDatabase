@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class SchoolDatabaseSQLite:
     def __init__(self, db_name):
         self.conn = sqlite3.connect(db_name)
@@ -27,6 +28,12 @@ class SchoolDatabaseSQLite:
         cursor = self.conn.execute(query, (pupil_id,))
         return cursor.fetchone()
 
+    def get_pupils_by_name(self, name):
+        query = 'SELECT * FROM pupils WHERE name = ?'
+        cursor = self.conn.execute(query, (name,))
+        pupils = cursor.fetchall()
+        return pupils
+
     def update_pupil(self, pupil_id, name=None, age=None, grade=None):
         update_fields = []
         values = []
@@ -44,7 +51,8 @@ class SchoolDatabaseSQLite:
         if not update_fields:
             return False
 
-        query = 'UPDATE pupils SET ' + ', '.join(update_fields) + ' WHERE pupil_id = ?'
+        query = 'UPDATE pupils SET ' + \
+            ', '.join(update_fields) + ' WHERE pupil_id = ?'
         values.append(pupil_id)
 
         self.conn.execute(query, tuple(values))
